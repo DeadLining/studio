@@ -1,0 +1,820 @@
+[TOC]
+
+
+
+# C++程序最基本的结构与语法
+
+```c++
+#include <iostream>
+using namespace std;
+int main(){
+    statement(s);
+}
+```
+
+输入`cin>>P1>>P2;`(分隔符：空格、Tab、'\n')
+
+输入行`cin.getline(P1,50);`(分隔符：'\n')
+
+输出`cout<<C<<C2<<endl;`(可以是任何类型的数据)
+
+输入任一字符`getch()`，需要`#include <conio.h>`
+
+
+
+# 基本数据类型与操作
+
+## 基本数据类型
+
+```c++
+char:1B;
+int:4B;
+double:8B;	//默认：fabs(x)<1.0e-8，即表示x等于0
+const int N=100;	//定义常量：const
+string T;
+```
+
+
+
+## 数字型数据操作
+
+加`a+b`；减`a-b`；乘`a*b`；除`a/b`；余`a%b`
+
+注意：若进行浮点数的操作，操作符两边的数据必须都是浮点实数
+
+
+
+## 数据类型之字符串
+
+### 字符串定义
+
+```c++
+#include <string>
+string S1("This is a string.");	//定义并初始化字符串对象S1
+string S2,S3;	//定义但没有初始化字符串对象S2，S3
+S2="That is a string.";
+S3=S1+S2;
+```
+
+
+
+### 字符串操作
+
+```c++
+int strlen(char *s);	//求字符串s的长度
+char *strcpy(char *destin,char *source);	//将字符串source复制到destin中，返回类型为char *
+int strcmp(char *string1,char *string2);	//比较string1和string2，string1<string2:<0，string1>string2:>0，string1==string2:=0
+char *strcat(char *destin,char *source);	//将source连接到destin末尾
+char *strlwr(char *string);	//string转换为小写
+char *strupr(char *string);	//string转换为大写
+index=S.find("This");	//查找字符串S中单词“This”的位置
+S.erase(index,sizeof("This")-1);	//删除单词“This”，“sizeof("This")-1”的原因为“This”也是一个字符串，有结束标记'\0'，所以需要“-1”
+S.insert(index,"Strong");	//在字符串S的index位置插入字符串“Strong”
+
+//若出现安全方面的警告，需要在文件头部添加：#define _CRT_SECURE_NO_WARNINGS
+
+//字符数组的释放
+char *p;
+delete []p;
+```
+
+
+
+## 数据结构之指针
+
+指针存储的是被指向对象的地址
+
+
+
+## 数据结构之数组
+
+### 定长一维数组
+
+定义方式`int A[N]; char A[N]; double A[N]; ……`
+
+注意：
+
+- 数组的下标从0开始，下标不能越界。A\[i\]\[j\]表示第i+1行j+1列的元素。
+- 元素存档在数组中，数组的大小在定义时要求是常量表达式。不能先输入N，在定义数组`double A[N]`，这是不正确的。
+
+
+
+### 二维数组
+
+```c++
+char str[][10]={"","","",""};
+//第一个参数可以为空
+//第二个参数不可为空，且必须为常量（不管是不是动态申请二维数组）
+```
+
+
+
+### 变长数组
+
+#### 普通方式实现一维变长数组
+
+```c++
+int len;
+cin>>len;
+int *P=new int[len];
+```
+
+
+
+#### 使用C++标准模版库（STL）中的vector（向量）也可以实现变长数组
+
+```c++
+#include <vector>
+int len;
+cin>>len;
+vector<int> vec(len);
+```
+
+使用完vector后调用`~vector()`析构函数释放内存
+
+
+
+#### 用vector实现变长二维数组
+
+```c++
+#include <vector>
+int len1,len2;
+cin>>len1>>len2;
+vector<vector<int>> vecInt(len1,vector<int>(len2));
+```
+
+
+
+#### 实现变长n维数组
+
+```c++
+int len1,len2;
+cin>>len1>>len2;
+int **P=new int*[len1];
+for(int i=0;i<len1;++i)
+    p[i]=new int[len2]
+```
+
+
+
+## 数据结构之结构体
+
+### 结构体定义
+
+```c++
+struct type_name {
+    member_type1 member_name1;
+    member_type2 member_name2;
+    member_type3 member_name3;
+    .
+    .
+} object_names;
+
+//or
+
+typedef struct type_name {
+    member_type1 member_name1;
+    member_type2 member_name2;
+    member_type3 member_name3;
+    .
+    .
+} Another_name;
+```
+
+
+
+### 结构体成员变量的调用
+
+#### 结构体对象
+
+```c++
+//定义+初始化
+struct T t={m1,m2};
+//结构体成员变量的调用
+t.m1;
+```
+
+
+
+#### 结构体指针
+
+```c++
+//定义
+struct T *t=new T;
+//初始化
+*t={m1,m2}
+//结构体成员变量的调用
+t->m1;
+```
+
+
+
+### 结构体构造函数
+
+#### 构造函数的定义
+
+```c++
+struct type_name {
+    type_name():member_name1(),member_name2(){}	//无参数的构造函数数组初始化时调用
+    //有参构造
+    type_name(member_type1 a,member_type2 b){
+        member_name1=a;
+        member_name2=b;
+    }
+    //or
+    type_name(member_type1 a=xx,member_type2 b=xx);
+    //or
+    type_name(member_type1 a,member_type2 b):member_name1(a),member_name2(b){}
+        
+    member_type1 member_name1;
+    member_type2 member_name2;
+} object_names;
+
+//构造函数的定义
+//原因：构造函数的定义和参数的默认值设置不能在一起
+type_name :: type_name(member_type1 a,member_type2 b){
+    member_name1=a;
+    member_name2=b;
+}
+//or
+type_name :: type_name(member_type1 a,member_type2 b):member_name1(a),member_name2(b){}
+
+
+//调用构造函数
+struct T t(m1,m2);
+struct T *p=new T(m1,m2);
+```
+
+
+
+#### 结构体析构函数
+
+```c++
+struct type_name {
+    member_type1 member_name1;
+    member_type2 member_name2;
+    ~type_name(){}
+    //or
+    ~type_name();
+} object_names;
+
+//析构函数的定义
+type_name :: ~type_name(){}
+
+//结构体对象的释放
+struct T *p=new T(m1,m2);
+delete p;
+//以下内容会报错
+//原因：new-delete相对应，即delete不会去删除栈中的数据（new创建的内容存储于堆中）
+struct T t(m1,m2);
+delete t;
+```
+
+
+
+## 数据结构之类
+
+### 类定义
+
+```c++
+class Box
+{
+public:
+    Box(){}	//无参构造函数
+        void function();
+    double length;   // 盒子的长度
+    double breadth;  // 盒子的宽度
+    double height;   // 盒子的高度
+    ~Book(){}
+};
+void Box::function(){}
+```
+
+
+
+### 类对象创建、释放
+
+<font color='red'>类对象创建之后，存储于栈中	(delete时采用先创建后释放的原则)</font>
+
+```c++
+Box B;	//无法释放B
+//or
+Box *P=new Box;
+delete P;
+```
+
+
+
+### 类成员参数、成员函数的调用
+
+```c++
+B.function();
+B.length();
+```
+
+
+
+### 类成员函数
+
+成员函数返回值为本身
+
+```c++
+Box function(){
+    return *this;
+}
+Box *function(){
+    return this;
+}
+```
+
+成员函数内部调用自身的成员变量、成员函数
+
+```c++
+this->m1;
+this->function();
+```
+
+
+
+### 类友元函数、友元类
+
+#### 友元函数
+
+友元函数不属于任何一个类，但是具有访问类中的私有成员的权限
+
+```c++
+class Box{
+private:
+    int length;
+public:
+    friend void set();
+};
+```
+
+
+
+#### 友元类
+
+使用友元类时注意：
+
+- 友元关系不能被继承。 
+- 友元关系是单向的，不具有交换性。若类B是类A的友元，类A不一定是类B的友元，要看在类中是否有相应的声明。
+- 友元关系不具有传递性。若类B是类A的友元，类C是B的友元，类C不一定是类A的友元，同样要看类中是否有相应的申明
+
+```c++
+class A{
+    ……
+public:
+    friend class B;
+};
+```
+
+
+
+### 类继承
+
+#### 调用顺序
+
+- 创建派生类的对象时，执行派生类的构造函数之前：
+  - 调用基类的构造函数
+     ->初始化派生类对象中从基类继承的成员
+  - 调用成员对象类的构造函数
+     ->初始化派生类对象中成员对象
+
+- 执行完派生类的析构函数之后：
+  - 用成员对象类的析构函数
+  - 调用基类的析构函数
+
+- 析构函数的调用顺序与构造函数的调用顺序相反
+
+```c++
+class A{
+    int a;
+public:
+    A(int n):a(n){}
+    ~A(){}
+};
+class B:public A{
+    int b;
+public:
+    B(int n1,int n2):A(n1),b(n2){}
+    ~B(){}
+};
+```
+
+
+
+#### 派生类函数的调用
+
+使用virtual修饰符改写基类的函数为虚函数
+
+**虚函数**是**多态**的一种实现形式:
+
+- 作用是实现函数的覆盖
+- 写法是将virtual加在函数之前
+
+今后在类的继承当中的基类尽量多使用虚函数
+
+```c++
+virtual void function(){}
+```
+
+
+
+#### 运算符的重载
+
+比较运算符
+
+```c++
+bool operator > (Date &dd){}
+```
+
+输出运算符
+
+```c++
+ostream & operator << (ostream &out,const Array &array){
+    out<<array.name<<endl;
+    return out;
+}
+```
+
+
+
+## 数据结构之全局变量
+
+```c++
+//正确
+static char *c[]={"one","two","three"};
+//错误
+static char (*c)[]={"one","two","three"};
+static char c[][]={"one","two","three"};
+```
+
+
+
+# 函数
+
+注意点：函数先声明后调用
+
+### 函数重载
+
+功能相当但参数不同的函数共用函数名
+
+形参要求：数据类型、个数或顺序有所不同
+
+
+
+### 函数名
+
+函数名表示函数的地址
+
+对应形参：指向函数的指针
+
+```c++
+//函数指针的使用
+void function(double (*f)(double),int n);
+```
+
+
+
+# 头文件扩展
+
+## 数学公式库
+
+`#include <cmath>`
+
+### 公式
+
+开方`pow(x,y)`(数学表示：$x^y$)
+
+平方根`sqrt(x)`(数学表示：$\sqrt(x)$)
+
+绝对值`fabs(x)`(数学表示：$\mid x \mid$)
+
+
+
+# 基本逻辑结构
+
+## 条件
+
+```c++
+if(condition1){
+    statement(s);
+}
+else if(condition2){
+    statement(s);
+}
+else{
+    statement(s);
+}
+```
+
+
+
+## 条件循环
+
+```c++
+while(condition){
+    statement(s);
+}
+
+//or
+
+do{
+    statement(s);
+}while(condition)
+```
+
+
+
+## 条件分类
+
+```c++
+switch(parameter){
+    case 'P1':
+        statement(s);
+        break;	//中断
+    case 'P2':
+        statement(s);
+        break;	//中断
+    default:
+        statement(s);
+}
+```
+
+
+
+## 循环
+
+```c++
+for(int i=start;i<=end;i++){
+    statemen(s);
+}
+```
+
+
+
+## 判断
+
+```c++
+max=a>b?a:b;
+//若a>b，则max=a；若a<=b，则max=b
+```
+
+
+
+# C++常用算法
+
+## 二分查找法
+
+功能：在**有序**数据序列中查找某个数据
+
+前提：待查找数据序列已排序
+
+迭代 or 递归
+
+
+
+## 秦九韶算法求多项式的值
+
+$$
+f(x)=a_{n}x^n+a_{n-1}x^{n-1}+\dots+a_{1}x+a_{0}
+$$
+
+
+
+## Hanoi塔问题
+
+```c++
+void hanoi(int n,char p1,char p2,char p3){
+    void move(int,char,char);
+    if(n==1)
+        move(n,p1,p3);
+    else{
+        hanoi(n-1,p1,p3,p2);
+        move(n,p1,p3);
+        hanoi(n-1,p2,p1,p3);
+    }
+}
+```
+
+
+
+## Fibonacci数列
+
+```c++
+long fibonacci(long f1,long f2,int n){
+    return n<=1?f2:fibonacci(f1+f2,f1,n-1);
+}
+```
+
+
+
+## MP3的音乐播放
+
+```c++
+#include <windows.h>
+#include <mmsystem.h>
+
+#pragma comment(lib,"winmm.lib")
+
+//编译器选项
+//-lwinmm
+
+char str[100]="play XXXXXX.mp3"
+mciSendString(str,NULL,0,0);
+```
+
+
+
+## 随机算法
+
+```c++
+#include <cstdlib>
+#include <ctime>
+srand(time(NULL));	//随机函数初始种子
+//使用
+rand();	//随机函数
+```
+
+
+
+
+
+# 文件读取
+
+## 头文件
+
+```c++
+#include <iostream>
+#include <fstream>
+using namespace std;
+class A{……};
+```
+
+
+
+## 打开文件
+
+二进制文件打开方式为：`ios::binary`
+
+```c++
+//输入
+ifstream fin("fin.dat",ios::binary);
+//输出
+ofstream fout("fout.dat",ios::binary);
+if(!fin || !fout){
+    cout<<"error"<<endl;
+    return 1;
+    
+}
+while(fin){
+    fin>>m>>n;
+    //fin的定位指针会随之移动改变
+    if(m!=0 && n!=0){
+        fout<<m<<n<<endl;
+        m=0;
+        n=0;
+    }
+}
+```
+
+
+
+## 关闭文件
+
+```c++
+fin.close();
+fout.close();
+```
+
+
+
+
+
+## 文件流操作
+
+### 定位指针
+
+将读写位置移动到文件中的任何字节：seekp、seekg
+
+- seekp函数：用于已经打开要进行输出的文件——“put”
+- seekg函数：用于已经打开要进行输入的文件——“get”
+
+文件定位标志：
+
+- ios::beg——从文件头开始计算偏移量
+- ios::end——从文件末尾开始计算偏移量
+- ios::cur——从当前位置开始计算偏移量
+
+返回当前定位指针的位置，也代表着输入流的大小：tellg、tellp
+
+- tellp函数：用于返回写入位置——“put”
+- tellg函数：用于返回读取位置——“get”
+
+```c++
+//举例
+file.seekg(0,ios::end);	//定位文件指针到文件末尾
+int len=file.tellg();	//得到文件指针位置（文件大小）
+```
+
+
+
+## 读文件
+
+```c++
+//读文件内容
+file.read((char *)&stu,sizeof(stu));
+//实际读文件的内容长度
+int length=fin.gcount();
+```
+
+
+
+## 写文件
+
+```c++
+//写文件内容
+fout.write((char *)&stu,length);
+```
+
+
+
+## 判断
+
+错误判断
+
+```c++
+//读写文件过程中错误判断
+if(fin.bad()){}
+if(fout.bad()){}
+```
+
+文件结尾判断
+
+```c++
+while(!fin.eof()){}
+```
+
+
+
+# C++程序编写过程中会遇到的问题
+
+- 在C++中，字符串的结束是'\0'，即'\0'是字符串的结束标记
+
+- `i++` $VS$ `++i`
+
+  `i++ `与 `++i `的主要区别有两个：
+
+  -  `i++ `返回原来的值，`++i `返回加1后的值
+  -  `i++ `不能作为左值，而`++i`可以
+
+```c++
+// 前缀形式：
+int& int::operator++() //这里返回的是一个引用形式，就是说函数返回值也可以作为一个左值使用
+{//函数本身无参，意味着是在自身空间内增加1的
+  *this += 1;  // 增加
+  return *this;  // 取回值
+}
+
+//后缀形式:
+const int int::operator++(int) //函数返回值是一个非左值型的，与前缀形式的差别所在。
+{//函数带参，说明有另外的空间开辟
+  int oldValue = *this;  // 取回值
+  ++(*this);  // 增加
+  return oldValue;  // 返回被取回的值
+}
+
+//i++返回的是一个临时变量
+```
+
+
+
+- 字符类型的判断：
+
+  大写字母：`'A'<=C<='Z'`
+
+  小写字母：'a'<=C<='z'`
+
+  数字：`'0'<=C<='9'`
+
+- 字符数组的首地址输出为字符串
+
+  整形数组的首地址输出还是地址
+
+- 生成随机数：
+
+  ```c++
+  #include <stdlib.h>
+  R=(double)rand()/RAND_MAX*(100-10)+10;
+  //rand()产生随机数
+  //(double)转双精度型
+  //RAND_MAX变换到[0,1]
+  //*(100-10)变换到[0,90]
+  ```
+
+- `const * char c_str()`：一个将string转换为 const* char的函数。
+
+  用法：`S.c_str();`
+
+
