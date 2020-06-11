@@ -1,0 +1,1 @@
+ffmpeg -i '.m3u8' -vcodec copy -acodec copy .mp4
